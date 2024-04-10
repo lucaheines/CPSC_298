@@ -1,0 +1,122 @@
+// My INPUT PROMPT - "write a snake game in python"
+
+// Reponse using Jan with Hermes Pro 7B Q4 Model
+
+"Creating a complete Snake game in Python can be quite extensive. However, I can provide you with a basic outline and code for the core mechanics of the Snake game. You'll need to use libraries like pygame to create the graphics and user interface.
+
+First, make sure you have Python and Pygame installed on your machine by running:"
+
+pip install pygame
+
+"Now, create a new Python file (e.g., snake_game.py) and add the following code:"
+
+import sys
+import pygame
+from pygame.locals import *
+
+# Initialize Pygame
+pygame.init()
+
+# Setup the gaming window
+WINDOW_WIDTH = 640
+WINDOW_HEIGHT = 480
+FPS = 10
+window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+pygame.display.set_caption('Snake Game')
+
+# Colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+
+# Game Specific Variables
+snake_size = 10
+speed = [5, 0]
+food_size = 5
+food_color = (255, 0, 0)
+font = pygame.font.Font(None, 36)
+
+# Game State Variables
+running = True
+paused = False
+game_over = False
+
+# Initialize the snake
+snake_body = [(snake_size * 10, snake_size * 10), (snake_size * 9, snake_size * 10), (snake_size * 8, snake_size * 9)]
+
+# Game Loop
+while running:
+    if game_over:
+        window.fill(BLACK)
+        text = font.render('Game Over!', True, WHITE)
+        text_rect = text.get_rect()
+        text_rect.centerx = WINDOW_WIDTH / 2
+        text_rect.centery = WINDOW_HEIGHT / 2
+        window.blit(text, text_rect)
+        pygame.display.update()
+        sys.sleep(2)
+        running = False
+
+    # Events (User Input, Window Close, etc.)
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            running = False
+        if event.type == KEYDOWN and not game_over:
+            if event.key == K_UP and speed[1] != 0:
+                speed = [speed[0], -speed[1]]
+            if event.key == K_DOWN and speed[1] != 0:
+                speed = [speed[0], speed[1]]
+            if event.key == K_LEFT and speed[0] != 0:
+                speed = [-speed[0], speed[1]]
+            if event.key == K_RIGHT and speed[0] != 0:
+                speed = [speed[0], -speed[1]]
+            if event.type == KEYDOWN and event.key == K_p:
+                paused = not paused
+
+    # Update game state
+    if not paused:
+        snake_body.insert(0, (snake_body[0][0] + speed[0], snake_body[0][1] + speed[1]))
+        if [snake_body[0][0], snake_body[0][1]] == [food_size * 5, food_size * 5]:
+            # Increase the size of the snake
+            snake_size += 1
+            # Generate a new fruit in a random location
+            food_position = (random.randrange(0, WINDOW_WIDTH - food_size * 5) // food_size) * food_size, \
+                            (random.randrange(0, WINDOW_HEIGHT - food_size * 5) // food_size) * food_size
+            food_body = [food_position]
+            # Reset game over status
+            game_over = False
+        for idx, segment in enumerate(snake_body):
+            if snake_body[idx] == [food_body[0][0], food_body[0][1]]:
+                food_body.append([random.randrange(0, WINDOW_WIDTH - food_size * 5) // food_size) * food_size,
+                                 random.randrange(0, WINDOW_HEIGHT - food_size * 5) // food_size) * food_size]
+                snake_body.append(snake_body[idx])
+                snake_body.pop(idx)
+            else:
+                # If head collides with wall or body, game over
+                if (segment[0] // food_size) * food_size == 0 and segment[1] + food_size == 5:
+                    game_over = True
+                if (segment[2] // food_size) * food_size == 0 and segment[3] + food_size == 5:
+                    game_over = True
+                if (segment[0] // food_size) * food_size == 39 and segment[1] - food_size == 5:
+                    game_over = True
+                if (segment[2] // food_size) * food_size == 39 and segment[3] - food_size == 5:
+                    game_over = True
+                if 0 < (segment[0] // food_size) * food_size < 39 and 0 < (segment[1] // food_size) * food_size < 39:
+                    if segment in snake_body[2:]:
+                        game_over = True
+
+    # Drawing (Screen-clearing, game objects)
+    window.fill(BLACK)
+    for seg in snake_body:
+        pygame.draw.rect(window, WHITE, (seg[0], seg[1], snake_size * 5, snake_size * 5), 0)
+    pygame.draw.rect(window, food_color, (food_body[0][0], food_body[0][1], food_size * 5, food_size * 5), 0)
+    if game_over:
+        text = font.render('Game Over!', True, WHITE)
+        window.blit(text, (WINDOW_WIDTH / 2 - text_rect.width // 2, WINDOW_HEIGHT / 2 - text_rect.height // 2))
+    pygame.display.update()
+    
+    # FPS Control (limit the frame rate)
+    clock.tick(FPS)
+
+pygame.quit()
+sys.exit()
+
