@@ -14,3 +14,13 @@
 [Lecture 5](./lectures/lecture05.md)
 
 [Lecture 6](./lectures/lecture06.md)
+
+[Lecture 7](./lectures/lecture07.md)
+
+[Lecture 8](./lectures/lecture08.md)
+
+[Lecture 9](./lectures/lecture09.md)
+
+[Lecture 10](./lectures/lecture10.md)
+
+[Lecture 11](./lectures/lecture11.md)
