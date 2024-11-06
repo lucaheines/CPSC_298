@@ -18,7 +18,8 @@
 # Main:
 
 ## Specify the OpenAI API key
-#openai-api-key: xxx
+
+#openai-api-key: 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
 
 ## Specify the Anthropic API key
 #anthropic-api-key: xxx
